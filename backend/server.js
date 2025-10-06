@@ -9,11 +9,13 @@ import orderRouter from "./routes/orderRoute.js"
 
 //App config
 const app = express()
-const port = 4000
+const port = process.env.PORT || 4000
 
 //middleware
 app.use(express.json())
-app.use(cors())
+const allowed = ['https://your-frontend-site.netlify.app','https://your-admin-site.netlify.app'];
+app.use(cors({ origin: (origin, cb) => cb(null, !origin || allowed.indexOf(origin) !== -1) }));
+
 
 //db connection
 connectDB();
@@ -28,9 +30,20 @@ app.use("/api/order",orderRouter)
 app.get("/",(req,res)=>{
     res.send("API Working")
 })
+app.get("/health", (req, res) => res.status(200).send("OK"));
+
+// quick test route (temporary)
+app.get("/api/food", (req, res) => {
+  return res.json({
+    success: true,
+    message: "Test food endpoint working",
+    data: []
+  });
+});
+
 
 app.listen(port,()=>{
-    console.log(`Server Started on http://localhost:${port}`)
+    console.log(`Server started on http://localhost:${port}`)
 })
 
 //
