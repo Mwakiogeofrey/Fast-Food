@@ -13,8 +13,12 @@ const port = process.env.PORT || 4000
 
 //middleware
 app.use(express.json())
-const allowed = ['https://your-frontend-site.netlify.app','https://your-admin-site.netlify.app'];
-app.use(cors({ origin: (origin, cb) => cb(null, !origin || allowed.indexOf(origin) !== -1) }));
+const allowed = [
+  'http://localhost:5173',
+  'https://fastfoodss.netlify.app/',
+  'https://<your-admin-site>.netlify.app'
+];
+app.use(cors({ origin: (origin, cb) => cb(null, !origin || allowed.includes(origin)) }));
 
 
 //db connection
