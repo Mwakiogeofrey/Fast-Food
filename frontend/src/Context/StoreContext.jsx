@@ -86,7 +86,7 @@ const StoreContextProvider = (props) => {
 
   const contextValue = {
     food_list, cartItems, setCartItems, addToCart, removeFromCart,
-    getTotalCartAmount, token, setToken, apiBase: API_BASE
+    getTotalCartAmount, token, setToken, apiBase: API_BASE, url: API_BASE
   };
 
   return <StoreContext.Provider value={contextValue}>{props.children}</StoreContext.Provider>;

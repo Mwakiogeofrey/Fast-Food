@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 const Add = ({url}) => {
 
     
-    const [image,setImage] = useState(false);
+    const [images,setImages] = useState([]);
     const [data,setData] = useState({
         name: "",
         description: "",
@@ -25,12 +25,13 @@ const Add = ({url}) => {
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
-        const formData = new FormData();
+    const formData = new FormData();
         formData.append("name", data.name)
         formData.append("description",data.description)
         formData.append("price", Number(data.price))
         formData.append("category",data.category)
-        formData.append("image",image)
+    // append multiple files under 'images'
+    images.forEach(f=> formData.append('images', f))
         const response = await axios.post(`${url}/api/food/add`, formData)
         if (response.data.success) {
             setData({
@@ -39,7 +40,7 @@ const Add = ({url}) => {
                 price:"",
                 category: "Salad"
             })
-            setImage(false)
+            setImages([])
             toast.success(response.data.message)
         }
         else {
@@ -52,11 +53,17 @@ const Add = ({url}) => {
     <div className='add'>
         <form className='flex-col' onSubmit={onSubmitHandler}>
             <div className='add-img-upload flex-col'>
-                <p>Upload Image</p>
-                <label htmlFor="image">
-                    <img src={image?URL.createObjectURL:assets.upload_area} alt="" />
-                </label>
-                <input onChange={(e)=>setImage(e.target.files[0])}type="file" id="image" hidden required />
+                <p>Upload Images</p>
+                <div className='add-img-preview'>
+                    {images.length===0 ? (
+                        <label htmlFor="images">
+                            <img src={assets.upload_area} alt="upload" />
+                        </label>
+                    ) : (
+                        images.map((f,i)=> <img key={i} src={URL.createObjectURL(f)} alt="preview" />)
+                    )}
+                </div>
+                <input multiple onChange={(e)=>setImages(Array.from(e.target.files))} type="file" id="images" hidden required />
             </div>
             <div className="add-product-name flex-col">
                 <p>Product name</p>

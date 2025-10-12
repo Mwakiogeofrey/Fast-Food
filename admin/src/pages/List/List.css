@@ -1,3 +1,42 @@
+/* Basic card grid for admin list */
+.admin-list {
+  padding: 16px;
+}
+.admin-list h2 {
+  margin-bottom: 12px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+.card{ cursor: pointer }
+.card-img img{
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+.card-body{
+  padding: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-body h3{ margin: 0; font-size: 16px }
+.card-body .category{ color:#6b7280; font-size: 13px }
+.card-body .price{ font-weight:600 }
+.card-actions{ margin-top: auto; display:flex; gap:8px }
+.card-actions .remove{ background:#ef4444; color:white; border:none; padding:6px 8px; border-radius:4px; cursor:pointer }
 .list-table-format{
     display: grid;
     grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr;
@@ -23,3 +62,12 @@
         display: none
     }
 }
+
+/* Admin modal styles */
+.admin-modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:2000 }
+.admin-modal{ width:90%; max-width:900px; background:#fff; border-radius:8px; overflow:hidden; padding:12px }
+.admin-close{ position:absolute; right:18px; top:14px; background:transparent; border:none; font-size:26px; cursor:pointer }
+.admin-modal-body{ display:flex; gap:12px }
+.admin-modal-img img{ width:420px; height:320px; object-fit:cover }
+.admin-modal-info{ display:flex; flex-direction:column; gap:8px }
+.admin-modal-actions .remove{ background:#ef4444; color:white; border:none; padding:8px 10px; border-radius:4px; cursor:pointer }
