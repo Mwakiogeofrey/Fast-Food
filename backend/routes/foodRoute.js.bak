@@ -1,3 +1,4 @@
+// backend/routes/foodRoute.js
 import express from "express";
 import { addFood, listFood, removeFood } from "../controllers/foodController.js";
 import multer from "multer";
@@ -8,20 +9,24 @@ const foodRouter = express.Router();
 const storage = multer.diskStorage({
   destination: "uploads",
   filename: (req, file, cb) => {
-    return cb(null, `${Date.now()}${file.originalname}`);
-  }
+    return cb(null, `${Date.now()}-${file.originalname}`);
+  },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 // POST /api/food/add
 foodRouter.post("/add", upload.single("image"), addFood);
 
-// GET /api/food and GET /api/food/list  (both return listFood)
+// GET /api/food and GET /api/food/list
 foodRouter.get("/", listFood);
 foodRouter.get("/list", listFood);
 
 // POST /api/food/remove
 foodRouter.post("/remove", removeFood);
+
+// If you later implement editFood in controllers:
+// import { editFood } from "../controllers/foodController.js";
+// foodRouter.post("/edit", upload.array("images"), editFood);
 
 export default foodRouter;
