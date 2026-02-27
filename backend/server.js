@@ -17,44 +17,16 @@ const ADMIN_URL = process.env.ADMIN_URL || "http://localhost:5174";
 
 app.use(express.json());
 
-// For local testing: allow localhost dev origins + any deployed origins you use.
-// Instead of hardcoding the frontend URLs we can read them from environment variables
-// so that changing ports or deploying to a different host doesn't require editing
-// source code.  Add FRONTEND_URL and ADMIN_URL to your backend/.env.
-const allowed = [
+const allowedOrigins = [
   process.env.FRONTEND_URL,
-  process.env.ADMIN_URL,
-  "http://localhost:5173", // fallback if env variables not set
-  "http://localhost:5174",
-  "http://localhost:3000", // if CRA or other dev port
-  "https://fast-food-backend-vugx.onrender.com", // your render backend (optional)
-  "https://fastfoodss.netlify.app" // replace with your actual Netlify URL (no trailing slash)
+  process.env.ADMIN_URL
 ].filter(Boolean);
-// If you want the simplest local testing mode, enable the following:
-// app.use(cors());
-// During development it can be easier to allow any localhost port
-// so you don't need to keep updating the list.  The regex below matches
-// http://localhost:XXXX where XXXX is 3000, 5173, 5174, etc.
-// For production you'll probably switch back to strict origin checking
-// using FRONTEND_URL / ADMIN_URL environment vars.
-
-console.log("CORS allowed origins:", allowed);
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true); // allow server-to-server or curl
-
-    // quick regex to allow localhost with any port in the 5000+ range
-    if (/^http:\/\/localhost:\d+$/.test(origin)) {
-      return cb(null, true);
-    }
-
-    if (allowed.includes(origin)) {
-      return cb(null, true);
-    }
-
-    // otherwise block
-    cb(null, false);
+    if (!origin) return cb(null, true); // server-to-server requests
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error("CORS not allowed"));
   },
   credentials: true
 }));
