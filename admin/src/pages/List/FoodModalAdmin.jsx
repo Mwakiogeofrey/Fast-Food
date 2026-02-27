@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import './List.css'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
-const FoodModalAdmin = ({ item, onClose, url, onRemove }) => {
+const FoodModalAdmin = ({ item, onClose, url, onRemove, onEdit }) => {
   if (!item) return null
 
   const [editing, setEditing] = useState(false)
@@ -30,10 +31,16 @@ const FoodModalAdmin = ({ item, onClose, url, onRemove }) => {
     try{
       const res = await axios.post(`${url}/api/food/edit`, fd)
       if (res.data.success) {
+        toast.success(res.data.message || 'Updated')
         setEditing(false)
-        window.location.reload()
+        if (typeof onEdit === 'function') await onEdit()
+      } else {
+        toast.error(res.data.message || 'Failed to update')
       }
-    }catch(err){ console.error(err) }
+    }catch(err){
+      console.error(err)
+      toast.error('Error saving changes')
+    }
   }
 
   return (

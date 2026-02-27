@@ -14,4 +14,5 @@ export const assets ={
     parcel_icon
 }
 
-export const url = 'http://localhost:4000'
+// API base URL comes from environment variable (VITE_API_URL)
+export const apiUrl = import.meta.env.VITE_API_URL || ''

@@ -30,6 +30,15 @@
       padding: 10px;
       outline: none;
   }
+
+  .order-item .remove-order {
+      background-color: tomato;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+  }
   
   @media(max-width:1000px){
       .order-item{

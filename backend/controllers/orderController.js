@@ -7,7 +7,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 //placing user order from frontend
 const placeOrder = async (req,res)=>{
 
-    const frontend_url = "http://localhost:5174";
+    // frontend URL for success/cancel redirects should come from env file
+    const frontend_url = process.env.FRONTEND_URL || "http://localhost:5173";
     const LkrToUsdConversionRate = 0.003;   // Conversion rate from LKR to USD
 
     try {
@@ -38,7 +39,7 @@ const placeOrder = async (req,res)=>{
                 product_data:{
                     name:"Delivery Charges"
                 },
-                unit_amount:Math.round(250 * 100 * LkrToUsdConversionRate)
+                unit_amount:Math.round(0* 100 * LkrToUsdConversionRate)
             },
             quantity:1
         })
@@ -109,5 +110,15 @@ const updateStatus = async (req,res) =>{
     }
 }
 
+// admin: delete an order
+const removeOrder = async (req,res) =>{
+    try {
+        await orderModel.findByIdAndDelete(req.body.orderId);
+        res.json({success:true,message:'Order removed'});
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:'Error'});
+    }
+}
 
-export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus}
+export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus,removeOrder}

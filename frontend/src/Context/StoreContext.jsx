@@ -54,7 +54,16 @@ const StoreContextProvider = (props) => {
   const fetchFoodList = async () => {
     try {
       const res = await api.get("/api/food/list");
-      const data = res?.data?.data ?? res?.data ?? [];
+      let data = res?.data?.data ?? res?.data ?? [];
+      if (Array.isArray(data)) {
+        // ensure price values are primitive numbers/strings
+        data = data.map(d => {
+          if (d && d.price && typeof d.price === 'object' && d.price.$numberDecimal) {
+            return { ...d, price: parseFloat(d.price.$numberDecimal) };
+          }
+          return d;
+        });
+      }
       setFoodList(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("fetchFoodList error:", err?.response || err);

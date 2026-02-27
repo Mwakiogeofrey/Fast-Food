@@ -1,6 +1,6 @@
 // backend/routes/foodRoute.js
 import express from "express";
-import { addFood, listFood, removeFood } from "../controllers/foodController.js";
+import { addFood, listFood, removeFood, editFood } from "../controllers/foodController.js";
 import multer from "multer";
 
 const foodRouter = express.Router();
@@ -25,9 +25,8 @@ foodRouter.get("/list", listFood);
 // POST /api/food/remove
 foodRouter.post("/remove", removeFood);
 
-// If you later implement editFood in controllers:
-// import { editFood } from "../controllers/foodController.js";
-// foodRouter.post("/edit", upload.array("images"), editFood);
+// edit food item (fields + optional new images)
+foodRouter.post("/edit", upload.array("images"), editFood);
 
 export default foodRouter;
 

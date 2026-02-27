@@ -15,7 +15,16 @@ const List = ({ url }) => {
             setError('')
             try {
                 const response = await axios.get(`${url}/api/food/list`)
-                if (response.data && response.data.success) setList(response.data.data)
+                if (response.data && response.data.success) {
+                    // convert Decimal128 price objects if present
+                    const items = Array.isArray(response.data.data) ? response.data.data.map(i => {
+                        if (i && i.price && i.price.$numberDecimal) {
+                            return { ...i, price: parseFloat(i.price.$numberDecimal) };
+                        }
+                        return i;
+                    }) : [];
+                    setList(items);
+                }
                 else {
                     setError('Failed to fetch list')
                     toast.error('Failed to fetch list')
@@ -83,7 +92,13 @@ const List = ({ url }) => {
                     ))}
                 </div>
                 {selected && (
-                    <AdminModal item={selected} onClose={() => setSelected(null)} url={url} onRemove={async(id)=>{ await removeFood(id); setSelected(null); }} />
+                    <AdminModal
+                      item={selected}
+                      onClose={() => setSelected(null)}
+                      url={url}
+                      onRemove={async(id)=>{ await removeFood(id); setSelected(null); }}
+                      onEdit={async () => { await fetchList(); setSelected(null); }}
+                    />
                 )}
             </div>
         )

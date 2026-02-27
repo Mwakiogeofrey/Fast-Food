@@ -10,7 +10,8 @@ import {ToastContainer} from 'react-toastify';
 
 const App = () => {
 
-  const url = "http://localhost:4000"
+  // base API URL is read from Vite environment variables
+  const url = import.meta.env.VITE_API_URL || ""
   return (
     <div>
       <ToastContainer/>

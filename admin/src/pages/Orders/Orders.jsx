@@ -11,11 +11,35 @@ const Orders = ({url}) => {
   const fetchAllOrders = async () =>{
     const response = await axios.get(url+"/api/order/list");
     if (response.data.success) {
-      setOrders(response.data.data);
-      console.log(response.data.data);
+      let data = response.data.data || [];
+      if (Array.isArray(data)) {
+        data = data.map(o => {
+          if (o && o.amount && o.amount.$numberDecimal) {
+            return { ...o, amount: parseFloat(o.amount.$numberDecimal) };
+          }
+          return o;
+        });
+      }
+      setOrders(data);
+      console.log(data);
     }
     else{
       toast.error("Error")
+    }
+  }
+
+  const removeOrder = async (orderId) => {
+    try {
+      const res = await axios.post(url + "/api/order/remove", { orderId });
+      if (res.data.success) {
+        toast.success(res.data.message || 'Order deleted');
+        await fetchAllOrders();
+      } else {
+        toast.error('Failed to delete');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Error deleting order');
     }
   }
 
@@ -67,6 +91,11 @@ const Orders = ({url}) => {
               <option value="Out for delivery">Out for delivery</option>
               <option value="Delivered">Delivered</option>
             </select>
+            {order.status === 'Delivered' && (
+              <button className="remove-order" onClick={()=>removeOrder(order._id)}>
+                Delete
+              </button>
+            )}
           </div>
         ))}
       </div>

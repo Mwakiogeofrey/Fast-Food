@@ -28,11 +28,22 @@ const addFood = async(req,res)=>{
     }
 }
 
+// helper to convert mongoose Decimal128 to number/string
+function normalizeFood(f) {
+    const obj = f.toObject ? f.toObject() : {...f};
+    if (obj.price && obj.price.$numberDecimal) {
+        // transform to a normal JS number for easier rendering
+        obj.price = parseFloat(obj.price.$numberDecimal);
+    }
+    return obj;
+}
+
 // food list
 const listFood =async(req,res)=>{
     try {
         const foods=await foodModel.find({});
-        res.json({success:true,data:foods})
+        const clean = foods.map(normalizeFood);
+        res.json({success:true,data:clean})
     } catch (error) {
         console.log(error)
         res.json({success:false,message:"Error"})
@@ -79,7 +90,10 @@ const editFood = async (req,res) => {
         }
 
         await food.save();
-        res.json({success:true,message:'Food updated',data:food});
+        // convert Decimal128 to primitive on response
+        const out = food.toObject ? food.toObject() : {...food};
+        if (out.price && out.price.$numberDecimal) out.price = parseFloat(out.price.$numberDecimal);
+        res.json({success:true,message:'Food updated',data:out});
     } catch (error) {
         console.error('editFood error', error);
         res.json({success:false,message:'Error'})
